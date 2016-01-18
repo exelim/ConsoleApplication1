@@ -10,63 +10,42 @@
 #include "camera.h"
 #include "texture.h"
 #include "Shaders.h"
+#include "math_3d.h"
+#include "Object.h"
+#include "Pipe_Object.h"
+#include "Bird_Object.h"
 
 #pragma comment(lib, "glew32.lib")
 
 #define WINDOW_WIDTH  320
 #define WINDOW_HEIGHT 320
 
-struct Vertex
-{
-	Vector3f m_pos;
-	Vector2f m_tex;
-
-	Vertex() {}
-
-	Vertex(Vector3f pos, Vector2f tex)
-	{
-		m_pos = pos;
-		m_tex = tex;
-	}
-};
-
-
-GLuint VBO;
-GLuint IBO;
-GLuint gWVPLocation;
-GLuint gSampler;
-Texture* pTexture = NULL;
 Camera* pGameCamera = NULL;
 
-static void RenderSceneCB()
+
+Object bg;
+BirdObject bird;
+PipeObject tube;
+PipeObject tube2;
+
+double asd = 0;
+
+void Draw()
 {
+	bird.CheckInteractWithTube(&tube2);
+	asd += 0.005;
 	pGameCamera->OnRender();
 
 	glClear(GL_COLOR_BUFFER_BIT);
+	bg.Draw(asd);
 
-	static float Scale = 0.0f;
-
-	Scale += 0.1f;
-
-	Pipeline p;
-	//p.Rotate(0.0f, Scale, 0.0f);
-	p.WorldPos(0.0f, 0.0f, 3.0f);
-	p.SetCamera(pGameCamera->GetPos(), pGameCamera->GetTarget(), pGameCamera->GetUp());
-	p.SetPerspectiveProj(60.0f, WINDOW_WIDTH, WINDOW_HEIGHT, 1.0f, 100.0f);
-
-	glUniformMatrix4fv(gWVPLocation, 1, GL_TRUE, (const GLfloat*)p.GetTrans());
-
-	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(1);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)12);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
-	pTexture->Bind(GL_TEXTURE0);
-	glDrawElements(GL_QUADS, 12, GL_UNSIGNED_INT, 0);
-
-	glDisableVertexAttribArray(0);
-	glDisableVertexAttribArray(1);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glEnable(GL_BLEND);
+		bird.Draw(asd);
+		tube.Draw(asd);
+		tube2.Draw(asd);
+	glDisable(GL_BLEND);
+	
 
 	glutSwapBuffers();
 }
@@ -95,36 +74,11 @@ static void PassiveMouseCB(int x, int y)
 
 static void InitializeGlutCallbacks()
 {
-	glutDisplayFunc(RenderSceneCB);
-	glutIdleFunc(RenderSceneCB);
+	glutDisplayFunc(Draw);
+	glutIdleFunc(Draw);
 	glutSpecialFunc(SpecialKeyboardCB);
 	glutPassiveMotionFunc(PassiveMouseCB);
 	glutKeyboardFunc(KeyboardCB);
-}
-
-
-static void CreateVertexBuffer()
-{
-	Vertex Vertices[4] = { 
-		Vertex(Vector3f(-1.0f, -1.0f, 0.f), Vector2f(0.0f, 0.0f)),
-		Vertex(Vector3f(-1.0f, 1.0f, 0.f),      Vector2f(0.f, 1.0f)),
-		Vertex(Vector3f(1.0f, 1.0f, 0.f), Vector2f(1.f, 1.0f)),
-		Vertex(Vector3f(1.0f, -1.0f, 0.f), Vector2f(1.f, 0.0f))
-	};
-
-	glGenBuffers(1, &VBO);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertices), Vertices, GL_STATIC_DRAW);
-}
-
-
-static void CreateIndexBuffer()
-{
-	unsigned int Indices[] = { 0, 1, 2, 3};
-
-	glGenBuffers(1, &IBO);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(Indices), Indices, GL_STATIC_DRAW);
 }
 
 int main(int argc, char** argv)
@@ -151,23 +105,41 @@ int main(int argc, char** argv)
 	glCullFace(GL_BACK);
 	glEnable(GL_CULL_FACE);
 
-	CreateVertexBuffer();
-	CreateIndexBuffer();
+	Vertex Vertices[4] = {
+		Vertex(Vector3f(-1.0f, -1.0f, 0.f), Vector2f(0.0f, 0.0f)),
+		Vertex(Vector3f(-1.0f, 1.0f, 0.f),      Vector2f(0.f, 1.0f)),
+		Vertex(Vector3f(1.0f, 1.0f, 0.f), Vector2f(1.f, 1.0f)),
+		Vertex(Vector3f(1.0f, -1.0f, 0.f), Vector2f(1.f, 0.0f))
+	};
 
-	//CompileShaders();
+	bg.Init("BgShader.vs", "BgShader.fs", Vertices, "bg.tga");
 
-	Shaders sd;
-	sd.Init("BgShader.vs", "BgShader.fs");
+	Vertex Vertices1[4] = {
+		Vertex(Vector3f(-0.8f, -0.8f, 0.f), Vector2f(0.0f, 0.0f)),
+		Vertex(Vector3f(-0.8f, -0.6f, 0.f),      Vector2f(0.f, 1.0f)),
+		Vertex(Vector3f(-0.6f, -0.6f, 0.f), Vector2f(1.f, 1.0f)),
+		Vertex(Vector3f(-0.6f, -0.8f, 0.f), Vector2f(1.f, 0.0f))
+	};
 
-	glUseProgram(sd.program);
+	bird.Init("BgShader.vs", "BgShader.fs", Vertices1, "bird.tga", "bird_2.tga", "bird_3.tga");
 
-	glUniform1i(gSampler, 0);
+	Vertex Vertices2[4] = {
+		Vertex(Vector3f(0.f, 0.4f, 0.f), Vector2f(0.0f, 0.0f)),
+		Vertex(Vector3f(0.f, 1.0f, 0.f),      Vector2f(0.f, 1.0f)),
+		Vertex(Vector3f(0.2f, 1.f, 0.f), Vector2f(1.f, 1.0f)),
+		Vertex(Vector3f(0.2f, 0.4f, 0.f), Vector2f(1.f, 0.0f))
+	};
 
-	pTexture = new Texture(GL_TEXTURE_2D, "bg.tga");
+	tube.Init("tubeShader.vs", "tubeShader.fs", Vertices2, "top_tube.tga", PipeObject::TYPE::TOP);
 
-	if (!pTexture->Load()) {
-		return 1;
-	}
+	Vertex Vertices3[4] = {
+		Vertex(Vector3f(0.f, -1.f, 0.f), Vector2f(0.0f, 0.0f)),
+		Vertex(Vector3f(0.f, -0.4f, 0.f),      Vector2f(0.f, 1.0f)),
+		Vertex(Vector3f(0.2f, -0.4f, 0.f), Vector2f(1.f, 1.0f)),
+		Vertex(Vector3f(0.2f, -1.f, 0.f), Vector2f(1.f, 0.0f))
+	};
+
+	tube2.Init("tubeShader.vs", "tubeShader.fs", Vertices3, "bot_tube.tga", PipeObject::TYPE::BOTTOM);
 
 	glutMainLoop();
 

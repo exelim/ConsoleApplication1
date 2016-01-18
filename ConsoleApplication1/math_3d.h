@@ -187,4 +187,18 @@ Quaternion operator*(const Quaternion& l, const Quaternion& r);
 
 Quaternion operator*(const Quaternion& q, const Vector3f& v);
 
+struct Vertex
+{
+	Vector3f m_pos;
+	Vector2f m_tex;
+
+	Vertex() {}
+
+	Vertex(Vector3f pos, Vector2f tex)
+	{
+		m_pos = pos;
+		m_tex = tex;
+	}
+};
+
 #endif	/* MATH_3D_H */
