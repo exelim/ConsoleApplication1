@@ -3,7 +3,7 @@
 
 /* $Id: //depot/3darg/Common/OpenGL_ES/oes2_wrapper/include/GLES2/gl2.h#8 $ */
 
-#include <gl2platform.h>
+#include <GLES2/gl2platform.h>
 
 #ifdef __cplusplus
 extern "C" {

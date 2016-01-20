@@ -1,6 +1,9 @@
+
 #include "Bird_Object.h"
 #include "Pipe_Object.h"
 #include "texture.h"
+
+
 
 int text = 1;
 
@@ -15,6 +18,9 @@ void BirdObject::Init(char* vShader, char* fShader, Vertex verticies[4], std::st
 	m_texture2->Load();
 	m_texture3 = new Texture(GL_TEXTURE_2D, texture3);
 	m_texture3->Load();
+	m_speed = 0.01;
+	m_shouldUpBird = false;
+	m_UpTime = 1.0;
 }
 
 void BirdObject::Draw(double dt)
@@ -47,15 +53,27 @@ void BirdObject::Draw(double dt)
 		m_texture3->Bind(GL_TEXTURE0);
 		text = 1;
 	}
-	
-	glDrawElements(GL_QUADS, 12, GL_UNSIGNED_INT, 0);
 
 	u_time = glGetUniformLocation(m_shaders->program, "u_time");
-	glUniform1f(u_time, dt);
+	glUniform1f(u_time, m_speed);
+	
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 	glDisableVertexAttribArray(0);
 	glDisableVertexAttribArray(1);
+	glUseProgram(0);
 
+	if (m_shouldUpBird && m_UpTime > 0.0)
+	{
+		m_speed -= 0.02;
+		m_UpTime -= 0.05;
+	}
+	else
+	{
+		m_UpTime = 1.0;
+		m_shouldUpBird = false;
+		m_speed += 0.01;
+	}
 	_dtp += 0.005;
 }
 

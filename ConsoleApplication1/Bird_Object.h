@@ -1,6 +1,9 @@
 #pragma once
 #include "Object.h"
 
+#include <GLES2/gl2.h>
+#include <EGL/egl.h>
+
 class PipeObject;
 class Texture;
 
@@ -18,4 +21,7 @@ public:
 
 	Texture * m_texture2;
 	Texture * m_texture3;
+	double m_speed;
+	bool m_shouldUpBird;
+	double m_UpTime;
 };

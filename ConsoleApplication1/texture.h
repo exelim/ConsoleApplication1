@@ -17,8 +17,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define	TEXTURE_H
 
 #include <string>
-
-#include <GL/glew.h>
+#include <GLES2/gl2.h>
+#include <EGL/egl.h>
 
 class Texture
 {

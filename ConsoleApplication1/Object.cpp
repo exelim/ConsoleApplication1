@@ -1,3 +1,4 @@
+
 #include "Object.h"
 
 double Object::_dtp = 0.0;
@@ -22,7 +23,9 @@ void Object::Init(char* vShader, char* fShader, Vertex verticies[4], std::string
 	glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(m_vertices), m_vertices, GL_STATIC_DRAW);
 
-	unsigned int Indices[] = { 0, 1, 2, 3 };
+	unsigned int Indices[] = { 0, 1, 2, 
+							   0, 2, 3
+	};
 	glGenBuffers(1, &m_IBO);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(Indices), Indices, GL_STATIC_DRAW);
@@ -38,14 +41,17 @@ void Object::Draw(double dt)
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)12);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IBO);
+
 	m_textures->Bind(GL_TEXTURE0);
-	glDrawElements(GL_QUADS, 12, GL_UNSIGNED_INT, 0);
 
 	u_time = glGetUniformLocation(m_shaders->program, "u_time");
 	glUniform1f(u_time, dt);
 
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
+
 	glDisableVertexAttribArray(0);
 	glDisableVertexAttribArray(1);
+	glUseProgram(0);
 }
 
 const Vertex Object::GetVertexByIdx(int idx) const

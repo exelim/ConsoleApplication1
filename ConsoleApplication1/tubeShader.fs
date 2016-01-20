@@ -1,12 +1,9 @@
-#version 330                                                                       
-                                                                                  
-in vec2 TexCoord0;                                                                 
-                                                                                    
-out vec4 FragColor;                                                                 
-                                                                                    
+precision mediump float;   
+
+varying vec2 TexCoord0;                                                                                                                                                 
 uniform sampler2D gSampler;                                                         
                                                                                     
 void main()                                                                         
 {                                                                                   
-    FragColor = texture2D(gSampler, TexCoord0.xy);                                 
+    gl_FragColor = texture2D(gSampler, TexCoord0);                                 
 }

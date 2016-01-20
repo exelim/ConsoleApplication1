@@ -1,11 +1,10 @@
-#version 330                                                                       
                                                                                   
-layout (location = 0) in vec3 Position;                                            
-layout (location = 1) in vec2 TexCoord;
+attribute vec3 Position;                                            
+attribute vec2 TexCoord;
 uniform float u_time;                                             
                                                                                    
                                                                                     
-out vec2 TexCoord0;                                                                 
+varying vec2 TexCoord0;                                                                 
                                                                                     
 void main()                                                                        
 {                                                              

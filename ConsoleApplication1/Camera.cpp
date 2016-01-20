@@ -1,4 +1,3 @@
-#include <GL/freeglut.h>
 
 #include <math.h>
 #include "camera.h"
@@ -68,13 +67,13 @@ void Camera::Init()
 	m_mousePos.x = m_windowWidth / 2;
 	m_mousePos.y = m_windowHeight / 2;
 
-	glutWarpPointer(m_mousePos.x, m_mousePos.y);
+	//glutWarpPointer(m_mousePos.x, m_mousePos.y);
 }
 
 
 bool Camera::OnKeyboard(int Key)
 {
-	bool Ret = false;
+	/*bool Ret = false;
 
 	switch (Key) {
 
@@ -113,7 +112,8 @@ bool Camera::OnKeyboard(int Key)
 	break;
 	}
 
-	return Ret;
+	return Ret;*/
+	return false;
 }
 
 

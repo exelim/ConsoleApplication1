@@ -1,3 +1,4 @@
+
 #include "Pipe_Object.h"
 
 PipeObject::PipeObject()
@@ -21,10 +22,11 @@ void PipeObject::Draw(double dt)
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)12);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IBO);
 	m_textures->Bind(GL_TEXTURE0);
-	glDrawElements(GL_QUADS, 12, GL_UNSIGNED_INT, 0);
 
 	u_time = glGetUniformLocation(m_shaders->program, "u_time");
 	glUniform1f(u_time, dt);
+
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 	glDisableVertexAttribArray(0);
 	glDisableVertexAttribArray(1);

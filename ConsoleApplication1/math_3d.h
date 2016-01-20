@@ -17,7 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define	MATH_3D_H
 
 #include <stdio.h>
-#include <math.h>
+#include "math.h"
 
 #define ToRadian(x) ((x) * 3.14 / 180.0f)
 #define ToDegree(x) ((x) * 180.0f / 3.14)

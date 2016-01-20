@@ -2,7 +2,7 @@
 #include "Shaders.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include <gl2.h>
+#include "esUtil.h"
 
 int Shaders::Init(char * fileVertexShader, char * fileFragmentShader)
 {
@@ -80,7 +80,7 @@ GLuint Shaders::esLoadShader(GLenum type, char * filename)
 
 
 			glGetShaderInfoLog(shader, infoLen, NULL, infoLog);
-			//esLogMessage("Error compiling shader <%s>:\n%s\n", filename, infoLog);
+			esLogMessage("Error compiling shader <%s>:\n%s\n", filename, infoLog);
 
 			delete[] infoLog;
 		}
