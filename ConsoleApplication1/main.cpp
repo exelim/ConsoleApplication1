@@ -14,6 +14,7 @@
 #include "Object.h"
 #include "Pipe_Object.h"
 #include "Bird_Object.h"
+#include "PipeManager.h"
 
 #include "esUtil.h"
 
@@ -29,14 +30,13 @@ Camera* pGameCamera = NULL;
 
 Object bg;
 BirdObject bird;
-PipeObject tube;
-PipeObject tube2;
+PipeManager pm;
 
 double asd = 0;
 
 void Draw(ESContext *esContext)
 {
-//	bird.CheckInteractWithTube(&tube2);
+	pm.DeletePipes();
 	asd += 0.005;
 	pGameCamera->OnRender();
 
@@ -46,8 +46,7 @@ void Draw(ESContext *esContext)
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_BLEND);
 		bird.Draw(asd);
-		tube.Draw(asd);
-		tube2.Draw(asd);
+		pm.DrawPipes(asd);
 	glDisable(GL_BLEND);
 	
 
@@ -148,7 +147,12 @@ int main(int argc, char** argv)
 
 	bird.Init("BirdShader.vs", "BirdShader.fs", Vertices1, "bird.tga", "bird_2.tga", "bird_3.tga");
 
-	Vertex Vertices2[4] = {
+	for (int i = 0; i < 5; i++)
+	{
+		pm.AddPipe();
+	}
+
+	/*Vertex Vertices2[4] = {
 		Vertex(Vector3f(0.f, 0.4f, 0.f), Vector2f(0.0f, 0.0f)),
 		Vertex(Vector3f(0.f, 1.0f, 0.f),      Vector2f(0.f, 1.0f)),
 		Vertex(Vector3f(0.2f, 1.f, 0.f), Vector2f(1.f, 1.0f)),
@@ -164,7 +168,7 @@ int main(int argc, char** argv)
 		Vertex(Vector3f(0.2f, -1.f, 0.f), Vector2f(1.f, 0.0f))
 	};
 
-	tube2.Init("tubeShader.vs", "tubeShader.fs", Vertices3, "bot_tube.tga", PipeObject::TYPE::BOTTOM);
+	tube2.Init("tubeShader.vs", "tubeShader.fs", Vertices3, "bot_tube.tga", PipeObject::TYPE::BOTTOM);*/
 
 	//glutMainLoop();
 	esMainLoop(&esContext);

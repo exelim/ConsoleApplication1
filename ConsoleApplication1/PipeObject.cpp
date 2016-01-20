@@ -34,7 +34,7 @@ void PipeObject::Draw(double dt)
 
 bool PipeObject::ShouldBeDeleted()
 {
-	if (m_vertices[0].m_pos.x - _dtp < -1.0)
+	if (m_vertices[3].m_pos.x - _dtp < -1.0)
 		return true;
 
 	return false;
