@@ -16,6 +16,8 @@ public:
 
 	bool CheckInteractWithTube(PipeObject * ob);
 
+	bool IsDead() const;
+
 	virtual void Draw(double dr) override;
 	virtual ~BirdObject();
 
@@ -24,4 +26,5 @@ public:
 	double m_speed;
 	bool m_shouldUpBird;
 	double m_UpTime;
+	bool m_isDead;
 };

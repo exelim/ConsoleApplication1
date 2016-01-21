@@ -29,37 +29,60 @@ Camera* pGameCamera = NULL;
 
 
 Object bg;
+Object fb_title;
+Object btn_start;
 BirdObject bird;
 PipeManager pm;
 
 double asd = 0;
 
+
+enum class GS {MAIN_MENU, IN_GAME, SCORE};
+
+GS current_state;
+
 void Draw(ESContext *esContext)
 {
-	if (!pm.CheckCollisionWithBird(bird))
+	pGameCamera->OnRender();
+
+	glClear(GL_COLOR_BUFFER_BIT);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glEnable(GL_BLEND);
+	bg.Draw(asd);
+
+	switch (current_state)
 	{
+	case GS::MAIN_MENU:
+		fb_title.Draw(asd);
+		btn_start.Draw(asd);
+		break;
+
+	case GS::IN_GAME:
+
+		if (pm.CheckCollisionWithBird(bird))
+			current_state = GS::SCORE;
+
 		pm.DeletePipes();
 		asd += 0.005;
-		pGameCamera->OnRender();
 
-		glClear(GL_COLOR_BUFFER_BIT);
-		bg.Draw(asd);
-
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		glEnable(GL_BLEND);
 		bird.Draw(asd);
 		pm.DrawPipes(asd);
-		glDisable(GL_BLEND);
+		break;
 
-
-		eglSwapBuffers(esContext->eglDisplay, esContext->eglSurface);
+	case GS::SCORE:
+		break;
 	}
+
+	
+	glDisable(GL_BLEND);
+
+
+	eglSwapBuffers(esContext->eglDisplay, esContext->eglSurface);
 }
 
 
 void Update(ESContext *esContext, float deltaTime)
 {
-
 }
 
 
@@ -78,6 +101,13 @@ static void KeyboardCB(ESContext *esContext, unsigned char key, bool bIsPressed)
 		case 0x57:	// W
 			bird.m_shouldUpBird = true;
 			break;
+		case 0x53:	// S
+			if (current_state == GS::MAIN_MENU)
+			{
+				current_state = GS::IN_GAME;
+			}
+			break;
+
 		}
 	}
 }
@@ -91,12 +121,6 @@ static void PassiveMouseCB(int x, int y)
 
 static void InitializeGlutCallbacks(ESContext & esContext)
 {
-	/*glutDisplayFunc(Draw);
-	glutIdleFunc(Draw);
-	glutSpecialFunc(SpecialKeyboardCB);
-	glutPassiveMotionFunc(PassiveMouseCB);
-	glutKeyboardFunc(KeyboardCB);*/
-
 	esRegisterDrawFunc(&esContext, Draw);
 	esRegisterUpdateFunc(&esContext, Update);
 	esRegisterKeyFunc(&esContext, KeyboardCB);
@@ -110,27 +134,16 @@ int main(int argc, char** argv)
 
 	esCreateWindow(&esContext, "Hello Triangle", WINDOW_WIDTH, WINDOW_HEIGHT, ES_WINDOW_RGB | ES_WINDOW_DEPTH);
 
-	/*glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA);
-	glutInitWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT);
-	glutInitWindowPosition(100, 100);
-	glutCreateWindow("Tutorial 16");*/
-
 	InitializeGlutCallbacks(esContext);
 
 	pGameCamera = new Camera(WINDOW_WIDTH, WINDOW_HEIGHT);
-
-	// Must be done after glut is initialized!
-	/*GLenum res = glewInit();
-	if (res != GLEW_OK) {
-		fprintf(stderr, "Error: '%s'\n", glewGetErrorString(res));
-		return 1;
-	}*/
 
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	glFrontFace(GL_CW);
 	glCullFace(GL_BACK);
 	glEnable(GL_CULL_FACE);
+
+	current_state = GS::MAIN_MENU;
 
 	Vertex Vertices[4] = {
 		Vertex(Vector3f(-1.0f, -1.0f, 0.f), Vector2f(0.0f, 0.0f)),
@@ -150,30 +163,29 @@ int main(int argc, char** argv)
 
 	bird.Init("BirdShader.vs", "BirdShader.fs", Vertices1, "bird.tga", "bird_2.tga", "bird_3.tga");
 
+	Vertex fb_title_verticies[4] = {
+		Vertex(Vector3f(-0.8f, 0.4f, 0.f), Vector2f(0.0f, 0.0f)),
+		Vertex(Vector3f(-0.8f, 0.8f, 0.f),      Vector2f(0.f, 1.0f)),
+		Vertex(Vector3f( 0.8f, 0.8f, 0.f), Vector2f(1.f, 1.0f)),
+		Vertex(Vector3f( 0.8f, 0.4f, 0.f), Vector2f(1.f, 0.0f))
+	};
+
+	fb_title.Init("BgShader.vs", "BgShader.fs", fb_title_verticies, "fb_title.tga");
+
+	Vertex btn_start_verticies[4] = {
+		Vertex(Vector3f(-0.5f, -0.4f, 0.f), Vector2f(0.0f, 0.0f)),
+		Vertex(Vector3f(-0.5f, 0.0f, 0.f),      Vector2f(0.f, 1.0f)),
+		Vertex(Vector3f(0.5f, 0.0f, 0.f), Vector2f(1.f, 1.0f)),
+		Vertex(Vector3f(0.5f, -0.4f, 0.f), Vector2f(1.f, 0.0f))
+	};
+
+	btn_start.Init("BgShader.vs", "BgShader.fs", btn_start_verticies, "btn_start.tga");
+
 	for (int i = 0; i < 5; i++)
 	{
 		pm.AddPipe();
 	}
 
-	/*Vertex Vertices2[4] = {
-		Vertex(Vector3f(0.f, 0.4f, 0.f), Vector2f(0.0f, 0.0f)),
-		Vertex(Vector3f(0.f, 1.0f, 0.f),      Vector2f(0.f, 1.0f)),
-		Vertex(Vector3f(0.2f, 1.f, 0.f), Vector2f(1.f, 1.0f)),
-		Vertex(Vector3f(0.2f, 0.4f, 0.f), Vector2f(1.f, 0.0f))
-	};
-
-	tube.Init("tubeShader.vs", "tubeShader.fs", Vertices2, "top_tube.tga", PipeObject::TYPE::TOP);
-
-	Vertex Vertices3[4] = {
-		Vertex(Vector3f(0.f, -1.f, 0.f), Vector2f(0.0f, 0.0f)),
-		Vertex(Vector3f(0.f, -0.4f, 0.f),      Vector2f(0.f, 1.0f)),
-		Vertex(Vector3f(0.2f, -0.4f, 0.f), Vector2f(1.f, 1.0f)),
-		Vertex(Vector3f(0.2f, -1.f, 0.f), Vector2f(1.f, 0.0f))
-	};
-
-	tube2.Init("tubeShader.vs", "tubeShader.fs", Vertices3, "bot_tube.tga", PipeObject::TYPE::BOTTOM);*/
-
-	//glutMainLoop();
 	esMainLoop(&esContext);
 
 	return 0;

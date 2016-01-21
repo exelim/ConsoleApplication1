@@ -108,6 +108,11 @@ bool BirdObject::CheckInteractWithTube(PipeObject * ob)
 	return false;
 }
 
+bool BirdObject::IsDead() const
+{
+	return m_isDead;
+}
+
 BirdObject::~BirdObject()
 {
 }
