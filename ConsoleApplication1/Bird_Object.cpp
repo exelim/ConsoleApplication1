@@ -56,7 +56,7 @@ void BirdObject::Draw(double dt)
 
 	u_time = glGetUniformLocation(m_shaders->program, "u_time");
 	glUniform1f(u_time, m_speed);
-	
+
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 	glDisableVertexAttribArray(0);
@@ -66,14 +66,21 @@ void BirdObject::Draw(double dt)
 	if (m_shouldUpBird && m_UpTime > 0.0)
 	{
 		m_speed -= 0.02;
-		m_UpTime -= 0.05;
+		m_UpTime -= 0.1;
+
+		m_vertices[2].m_pos.y += 0.02;
+		m_vertices[3].m_pos.y += 0.02;
 	}
 	else
 	{
 		m_UpTime = 1.0;
 		m_shouldUpBird = false;
 		m_speed += 0.01;
+
+		m_vertices[2].m_pos.y -= 0.01;
+		m_vertices[3].m_pos.y -= 0.01;
 	}
+
 	_dtp += 0.005;
 }
 
@@ -82,11 +89,16 @@ bool BirdObject::CheckInteractWithTube(PipeObject * ob)
 	switch (ob->GetType())
 	{
 	case PipeObject::TYPE::TOP:
-		if (m_vertices[2].m_pos.y >= ob->GetVertexByIdx(0).m_pos.y && m_vertices[2].m_pos.x >= ob->GetVertexByIdx(0).m_pos.x - _dtp)
+		if (m_vertices[2].m_pos.y >= ob->GetVertexByIdx(0).m_pos.y && m_vertices[2].m_pos.x >= ob->GetVertexByIdx(0).m_pos.x - _dtp &&
+			m_vertices[1].m_pos.x <= ob->GetVertexByIdx(3).m_pos.x - _dtp
+			)
 			return true;
 		break;
 	case PipeObject::TYPE::BOTTOM:
-		if (m_vertices[3].m_pos.y <= ob->GetVertexByIdx(1).m_pos.y && m_vertices[2].m_pos.x >= ob->GetVertexByIdx(0).m_pos.x - _dtp)
+		if (m_vertices[3].m_pos.y <= ob->GetVertexByIdx(1).m_pos.y && m_vertices[2].m_pos.x >= ob->GetVertexByIdx(0).m_pos.x - _dtp
+			&&
+			m_vertices[1].m_pos.x <= ob->GetVertexByIdx(3).m_pos.x - _dtp
+			)
 			return true;
 		break;
 	default:

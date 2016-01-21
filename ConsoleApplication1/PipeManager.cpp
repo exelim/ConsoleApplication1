@@ -1,6 +1,7 @@
 #include "PipeManager.h"
 #include "Pipe_Object.h"
 #include <time.h>
+#include "Bird_Object.h"
 
 PipeManager::PipeManager()
 	:m_pipesCount(0)
@@ -25,7 +26,7 @@ void PipeManager::AddPipe()
 		initial_top_position[i].m_pos.x += 0.8;
 		if (i == 0 || i == 3)
 		{
-			initial_top_position[i].m_pos.y = 0.4 + rnd;
+			initial_top_position[i].m_pos.y = 0.2 + rnd;
 		}
 	}
 	PipeObject* top_pipe = new PipeObject();
@@ -37,11 +38,11 @@ void PipeManager::AddPipe()
 		initial_bot_position[i].m_pos.x += 0.8;
 		if (i == 1 || i == 2)
 		{
-			initial_bot_position[i].m_pos.y = -0.1 + rnd;
+			initial_bot_position[i].m_pos.y = -0.6 + rnd;
 		}
 	}
 	PipeObject* bot_pipe = new PipeObject();
-	bot_pipe->Init("tubeShader.vs", "tubeShader.fs", initial_bot_position, "bot_tube.tga", PipeObject::TYPE::TOP);
+	bot_pipe->Init("tubeShader.vs", "tubeShader.fs", initial_bot_position, "bot_tube.tga", PipeObject::TYPE::BOTTOM);
 
 	m_pipes.push_back(top_pipe);
 	m_pipes.push_back(bot_pipe);
@@ -67,6 +68,16 @@ void PipeManager::DeletePipes()
 			AddPipe();
 		}
 	}
+}
+
+bool PipeManager::CheckCollisionWithBird(BirdObject& bird)
+{
+	for (auto const & pipe : m_pipes)
+	{
+		if (bird.CheckInteractWithTube(pipe))
+			return true;
+	}
+	return false;
 }
 
 std::vector<PipeObject*> PipeManager::GetPipes() const

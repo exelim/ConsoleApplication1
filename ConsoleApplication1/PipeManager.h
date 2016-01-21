@@ -3,6 +3,7 @@
 #include "math_3d.h"
 
 class PipeObject;
+class BirdObject;
 
 class PipeManager
 {
@@ -15,6 +16,7 @@ public:
 	void AddPipe();
 	void DeletePipes();
 	void DrawPipes(double dt);
+	bool CheckCollisionWithBird(BirdObject& bird);
 
 private:
 

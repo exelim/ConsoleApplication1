@@ -36,21 +36,24 @@ double asd = 0;
 
 void Draw(ESContext *esContext)
 {
-	pm.DeletePipes();
-	asd += 0.005;
-	pGameCamera->OnRender();
+	if (!pm.CheckCollisionWithBird(bird))
+	{
+		pm.DeletePipes();
+		asd += 0.005;
+		pGameCamera->OnRender();
 
-	glClear(GL_COLOR_BUFFER_BIT);
-	bg.Draw(asd);
+		glClear(GL_COLOR_BUFFER_BIT);
+		bg.Draw(asd);
 
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glEnable(GL_BLEND);
 		bird.Draw(asd);
 		pm.DrawPipes(asd);
-	glDisable(GL_BLEND);
-	
+		glDisable(GL_BLEND);
 
-	eglSwapBuffers(esContext->eglDisplay, esContext->eglSurface);
+
+		eglSwapBuffers(esContext->eglDisplay, esContext->eglSurface);
+	}
 }
 
 
