@@ -15,6 +15,7 @@ public:
 	void Init(char* vShader, char* fShader, Vertex verticies[4], std::string texture, std::string texture2, std::string texture3);
 
 	bool CheckInteractWithTube(PipeObject * ob);
+	bool ChechScore(PipeObject * ob);
 
 	bool IsDead() const;
 
@@ -27,4 +28,5 @@ public:
 	bool m_shouldUpBird;
 	double m_UpTime;
 	bool m_isDead;
+	int m_score;
 };

@@ -12,10 +12,13 @@ public:
 	bool ShouldBeDeleted();
 
 	TYPE GetType() const;
+	bool IsScored() const;
+	void SetIsScored(bool value);
 
 	virtual void Draw(double dr) override;
 	virtual ~PipeObject();
 
 private:
 	TYPE m_type;
+	bool m_isScored;
 };

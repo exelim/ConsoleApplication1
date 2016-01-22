@@ -21,6 +21,7 @@ void BirdObject::Init(char* vShader, char* fShader, Vertex verticies[4], std::st
 	m_speed = 0.01;
 	m_shouldUpBird = false;
 	m_UpTime = 1.0;
+	m_score = 0;
 }
 
 void BirdObject::Draw(double dt)
@@ -103,6 +104,17 @@ bool BirdObject::CheckInteractWithTube(PipeObject * ob)
 		break;
 	default:
 		break;
+	}
+
+	return false;
+}
+
+bool BirdObject::ChechScore(PipeObject * ob)
+{
+	if (m_vertices[2].m_pos.x >= ((ob->GetVertexByIdx(0).m_pos.x + ob->GetVertexByIdx(3).m_pos.x) / 2.0 - _dtp))
+	{
+		m_score++;
+		return true;
 	}
 
 	return false;

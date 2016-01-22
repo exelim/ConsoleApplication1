@@ -80,6 +80,22 @@ bool PipeManager::CheckCollisionWithBird(BirdObject& bird)
 	return false;
 }
 
+bool PipeManager::CheckScore(BirdObject& bird)
+{
+	for (auto const & pipe : m_pipes)
+	{
+		if (!pipe->IsScored() && pipe->GetType() == PipeObject::TYPE::TOP)
+		{
+			if (bird.ChechScore(pipe))
+			{
+				pipe->SetIsScored(true);
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
 std::vector<PipeObject*> PipeManager::GetPipes() const
 {
 	return m_pipes;

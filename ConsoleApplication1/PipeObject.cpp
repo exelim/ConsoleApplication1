@@ -9,6 +9,7 @@ void PipeObject::Init(char* vShader, char* fShader, Vertex verticies[4], std::st
 {
 	Object::Init(vShader, fShader, verticies, texture);
 	m_type = _type;
+	m_isScored = false;
 }
 
 void PipeObject::Draw(double dt)
@@ -38,6 +39,16 @@ bool PipeObject::ShouldBeDeleted()
 		return true;
 
 	return false;
+}
+
+bool PipeObject::IsScored() const
+{
+	return m_isScored;
+}
+
+void PipeObject::SetIsScored(bool value)
+{
+	m_isScored = value;
 }
 
 PipeObject::TYPE PipeObject::GetType() const

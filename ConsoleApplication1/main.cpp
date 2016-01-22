@@ -4,7 +4,8 @@
 #include <assert.h>
 #include <math.h>
 #include "windows.h"
-//#include <GL/GL.h>
+#include <vector>
+#include <cstdlib>
 
 #include "pipeline.h"
 #include "camera.h"
@@ -15,6 +16,7 @@
 #include "Pipe_Object.h"
 #include "Bird_Object.h"
 #include "PipeManager.h"
+#include "ScoreObject.h"
 
 #include "esUtil.h"
 
@@ -33,6 +35,8 @@ Object fb_title;
 Object btn_start;
 BirdObject bird;
 PipeManager pm;
+std::vector<Object *> m_digits;
+ScoreObject so;
 
 double asd = 0;
 
@@ -62,11 +66,15 @@ void Draw(ESContext *esContext)
 		if (pm.CheckCollisionWithBird(bird))
 			current_state = GS::SCORE;
 
+		if (pm.CheckScore(bird))
+			so.IncreaseScore();
+
 		pm.DeletePipes();
 		asd += 0.005;
 
 		bird.Draw(asd);
 		pm.DrawPipes(asd);
+		so.Draw(asd);
 		break;
 
 	case GS::SCORE:
@@ -185,6 +193,8 @@ int main(int argc, char** argv)
 	{
 		pm.AddPipe();
 	}
+
+	so.Init("", "", nullptr, "");
 
 	esMainLoop(&esContext);
 

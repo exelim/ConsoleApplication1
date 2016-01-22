@@ -17,6 +17,7 @@ public:
 	void DeletePipes();
 	void DrawPipes(double dt);
 	bool CheckCollisionWithBird(BirdObject& bird);
+	bool CheckScore(BirdObject& bird);
 
 private:
 
