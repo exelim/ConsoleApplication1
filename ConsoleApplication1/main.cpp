@@ -37,11 +37,12 @@ BirdObject bird;
 PipeManager pm;
 std::vector<Object *> m_digits;
 ScoreObject so;
+Object UA, US;
 
 double asd = 0;
 
 
-enum class GS {MAIN_MENU, IN_GAME, SCORE};
+enum class GS {CHOOSE_LANGUAGE, TRAINING, MAIN_MENU, IN_GAME, SCORE};
 
 GS current_state;
 
@@ -56,6 +57,10 @@ void Draw(ESContext *esContext)
 
 	switch (current_state)
 	{
+	case GS::CHOOSE_LANGUAGE:
+		UA.Draw(asd);
+		US.Draw(asd);
+		break;
 	case GS::MAIN_MENU:
 		fb_title.Draw(asd);
 		btn_start.Draw(asd);
@@ -115,7 +120,19 @@ static void KeyboardCB(ESContext *esContext, unsigned char key, bool bIsPressed)
 				current_state = GS::IN_GAME;
 			}
 			break;
+		case 0x55:	// U
+			if (current_state == GS::CHOOSE_LANGUAGE)
+			{
+				current_state = GS::MAIN_MENU;
+			}
+			break;
 
+		case 0x41:	// A
+			if (current_state == GS::CHOOSE_LANGUAGE)
+			{
+				current_state = GS::MAIN_MENU;
+			}
+			break;
 		}
 	}
 }
@@ -151,7 +168,7 @@ int main(int argc, char** argv)
 	glCullFace(GL_BACK);
 	glEnable(GL_CULL_FACE);
 
-	current_state = GS::MAIN_MENU;
+	current_state = GS::CHOOSE_LANGUAGE;
 
 	Vertex Vertices[4] = {
 		Vertex(Vector3f(-1.0f, -1.0f, 0.f), Vector2f(0.0f, 0.0f)),
@@ -188,6 +205,24 @@ int main(int argc, char** argv)
 	};
 
 	btn_start.Init("BgShader.vs", "BgShader.fs", btn_start_verticies, "btn_start.tga");
+
+	Vertex US_verticies[4] = {
+		Vertex(Vector3f(-0.4f, -0.7f, 0.f), Vector2f(0.0f, 0.0f)),
+		Vertex(Vector3f(-0.4f, -0.2f, 0.f),      Vector2f(0.f, 1.0f)),
+		Vertex(Vector3f(0.4f, -0.2f, 0.f), Vector2f(1.f, 1.0f)),
+		Vertex(Vector3f(0.4f, -0.7f, 0.f), Vector2f(1.f, 0.0f))
+	};
+
+	UA.Init("BgShader.vs", "BgShader.fs", US_verticies, "US.tga");
+
+	Vertex UA_verticies[4] = {
+		Vertex(Vector3f(-0.4f, 0.0f, 0.f), Vector2f(0.0f, 0.0f)),
+		Vertex(Vector3f(-0.4f, 0.5f, 0.f),      Vector2f(0.f, 1.0f)),
+		Vertex(Vector3f(0.4f, 0.5f, 0.f), Vector2f(1.f, 1.0f)),
+		Vertex(Vector3f(0.4f, 0.0f, 0.f), Vector2f(1.f, 0.0f))
+	};
+
+	US.Init("BgShader.vs", "BgShader.fs", UA_verticies, "UA.tga");
 
 	for (int i = 0; i < 5; i++)
 	{
