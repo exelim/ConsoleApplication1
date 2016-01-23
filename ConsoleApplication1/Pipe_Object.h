@@ -15,7 +15,7 @@ public:
 	bool IsScored() const;
 	void SetIsScored(bool value);
 
-	virtual void Draw(double dr) override;
+	virtual void Draw(double dr, double offset = 0) override;
 	virtual ~PipeObject();
 
 private:

@@ -12,7 +12,7 @@ void PipeObject::Init(char* vShader, char* fShader, Vertex verticies[4], std::st
 	m_isScored = false;
 }
 
-void PipeObject::Draw(double dt)
+void PipeObject::Draw(double dt, double offset)
 {
 	glUseProgram(m_shaders->program);
 

@@ -31,7 +31,7 @@ void Object::Init(char* vShader, char* fShader, Vertex verticies[4], std::string
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(Indices), Indices, GL_STATIC_DRAW);
 }
 
-void Object::Draw(double dt)
+void Object::Draw(double dt, double offset)
 {
 	glUseProgram(m_shaders->program);
 
@@ -46,6 +46,9 @@ void Object::Draw(double dt)
 
 	u_time = glGetUniformLocation(m_shaders->program, "u_time");
 	glUniform1f(u_time, dt);
+
+	u_offset = glGetUniformLocation(m_shaders->program, "u_offset");
+	glUniform1f(u_offset, offset);
 
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
 

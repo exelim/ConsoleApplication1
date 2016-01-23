@@ -10,7 +10,7 @@ public:
 
 	void Init(char* vShader, char* fShader, Vertex verticies[4], std::string texture);
 
-	virtual void Draw(double dr) override;
+	virtual void Draw(double dr, double offset = 0) override;
 
 	void IncreaseScore();
 

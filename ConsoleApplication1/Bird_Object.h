@@ -19,7 +19,7 @@ public:
 
 	bool IsDead() const;
 
-	virtual void Draw(double dr) override;
+	virtual void Draw(double dr, double offset = 0) override;
 	virtual ~BirdObject();
 
 	Texture * m_texture2;

@@ -22,7 +22,7 @@ void ScoreObject::Init(char* vShader, char* fShader, Vertex verticies[4], std::s
 		std::string q = a;
 		std::string asd = "digit_" + q + ".tga";
 
-		tmp->Init("BgShader.vs", "BgShader.fs", btn_start_verticies, asd);
+		tmp->Init("digitShader.vs", "digitShader.fs", btn_start_verticies, asd);
 
 		m_digits.push_back(tmp);
 	}
@@ -30,15 +30,27 @@ void ScoreObject::Init(char* vShader, char* fShader, Vertex verticies[4], std::s
 	m_value = 0;
 }
 
-void ScoreObject::Draw(double dr)
+void ScoreObject::Draw(double dr, double offset)
 {
 	if (m_value < 10)
 	{
 		m_digits[m_value]->Draw(dr);
 	}
+	else if (m_value < 100)
+	{
+		int v1 = m_value / 10.0;
+		int v2 = m_value % 10;
+		m_digits[v1]->Draw(dr, -0.12);
+		m_digits[v2]->Draw(dr, 0.12);
+	}
 	else
 	{
-
+		int v1 = m_value / 100.0;
+		int v2 = (m_value % 100) / 10.0;
+		int v3 = (m_value % 100) % 10;
+		m_digits[v1]->Draw(dr, -0.30);
+		m_digits[v2]->Draw(dr, -0.06);
+		m_digits[v3]->Draw(dr, 0.18);
 	}
 }
 
