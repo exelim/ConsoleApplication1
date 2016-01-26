@@ -83,6 +83,10 @@ void BirdObject::Draw(double dt, double offset)
 	}
 
 	_dtp += 0.005;
+
+	glDisableVertexAttribArray(0);
+	glDisableVertexAttribArray(1);
+	glUseProgram(0);
 }
 
 bool BirdObject::CheckInteractWithTube(PipeObject * ob)

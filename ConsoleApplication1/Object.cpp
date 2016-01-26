@@ -72,6 +72,6 @@ Object::~Object()
 	if (m_shaders)
 		delete m_shaders;
 
-	if (m_textures)
-		delete m_textures;
+	//if (m_textures)
+		//delete m_textures;
 }

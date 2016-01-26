@@ -31,6 +31,7 @@ void PipeObject::Draw(double dt, double offset)
 
 	glDisableVertexAttribArray(0);
 	glDisableVertexAttribArray(1);
+	glUseProgram(0);
 }
 
 bool PipeObject::ShouldBeDeleted()

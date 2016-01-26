@@ -13,7 +13,7 @@ public:
 
 	std::vector<PipeObject*> GetPipes() const;
 
-	void AddPipe();
+	void AddPipe( bool isTop);
 	void DeletePipes();
 	void DrawPipes(double dt);
 	bool CheckCollisionWithBird(BirdObject& bird);
@@ -37,4 +37,6 @@ private:
 		Vertex(Vector3f(0.2f, 0.0f, 0.f), Vector2f(1.f, 1.0f)),
 		Vertex(Vector3f(0.2f, -1.f, 0.f), Vector2f(1.f, 0.0f))
 	};
+
+	double m_lastRnd;
 };

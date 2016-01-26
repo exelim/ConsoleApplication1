@@ -33,13 +33,17 @@ Camera* pGameCamera = NULL;
 Object bg;
 Object fb_title;
 Object btn_start;
+Object btn_options;
 BirdObject bird;
 PipeManager pm;
 std::vector<Object *> m_digits;
 ScoreObject so;
 Object UA, US;
+Object score_board, game_over;
 
 double asd = 0;
+
+std::string language = "";
 
 
 enum class GS {CHOOSE_LANGUAGE, TRAINING, MAIN_MENU, IN_GAME, SCORE};
@@ -64,6 +68,7 @@ void Draw(ESContext *esContext)
 	case GS::MAIN_MENU:
 		fb_title.Draw(asd);
 		btn_start.Draw(asd);
+		btn_options.Draw(asd);
 		break;
 
 	case GS::IN_GAME:
@@ -83,6 +88,8 @@ void Draw(ESContext *esContext)
 		break;
 
 	case GS::SCORE:
+		score_board.Draw(asd);
+		game_over.Draw(asd);
 		break;
 	}
 
@@ -102,6 +109,45 @@ void Update(ESContext *esContext, float deltaTime)
 static void SpecialKeyboardCB(int Key, int x, int y)
 {
 	pGameCamera->OnKeyboard(Key);
+}
+
+void InitLanguageButtons()
+{
+	Vertex btn_start_verticies[4] = {
+		Vertex(Vector3f(-0.5f, -0.2f, 0.f), Vector2f(0.0f, 0.0f)),
+		Vertex(Vector3f(-0.5f, 0.2f, 0.f),      Vector2f(0.f, 1.0f)),
+		Vertex(Vector3f(0.5f, 0.2f, 0.f), Vector2f(1.f, 1.0f)),
+		Vertex(Vector3f(0.5f, -0.2f, 0.f), Vector2f(1.f, 0.0f))
+	};
+
+	btn_start.Init("BgShader.vs", "BgShader.fs", btn_start_verticies, "start_btn_" + language + ".tga");
+
+	Vertex btn_language_verticies[4] = {
+		Vertex(Vector3f(-0.5f, -0.8f, 0.f), Vector2f(0.0f, 0.0f)),
+		Vertex(Vector3f(-0.5f, -0.4f, 0.f),      Vector2f(0.f, 1.0f)),
+		Vertex(Vector3f(0.5f, -0.4f, 0.f), Vector2f(1.f, 1.0f)),
+		Vertex(Vector3f(0.5f, -0.8f, 0.f), Vector2f(1.f, 0.0f))
+	};
+
+	btn_options.Init("BgShader.vs", "BgShader.fs", btn_language_verticies, "language_" + language + ".tga");
+
+	Vertex score_board_verticies[4] = {
+		Vertex(Vector3f(-0.7f, -0.5f, 0.f), Vector2f(0.0f, 0.0f)),
+		Vertex(Vector3f(-0.7f, 0.3f, 0.f),      Vector2f(0.f, 1.0f)),
+		Vertex(Vector3f(0.7f, 0.3f, 0.f), Vector2f(1.f, 1.0f)),
+		Vertex(Vector3f(0.7f, -0.5f, 0.f), Vector2f(1.f, 0.0f))
+	};
+
+	score_board.Init("BgShader.vs", "BgShader.fs", score_board_verticies, "score_board_" + language + ".tga");
+
+	Vertex game_over_verticies[4] = {
+		Vertex(Vector3f(-0.8f, 0.4f, 0.f), Vector2f(0.0f, 0.0f)),
+		Vertex(Vector3f(-0.8f, 0.8f, 0.f),      Vector2f(0.f, 1.0f)),
+		Vertex(Vector3f(0.8f, 0.8f, 0.f), Vector2f(1.f, 1.0f)),
+		Vertex(Vector3f(0.8f, 0.4f, 0.f), Vector2f(1.f, 0.0f))
+	};
+
+	game_over.Init("BgShader.vs", "BgShader.fs", game_over_verticies, "game_over_" + language + ".tga");
 }
 
 
@@ -124,6 +170,8 @@ static void KeyboardCB(ESContext *esContext, unsigned char key, bool bIsPressed)
 			if (current_state == GS::CHOOSE_LANGUAGE)
 			{
 				current_state = GS::MAIN_MENU;
+				language = "UA";
+				InitLanguageButtons();
 			}
 			break;
 
@@ -131,9 +179,13 @@ static void KeyboardCB(ESContext *esContext, unsigned char key, bool bIsPressed)
 			if (current_state == GS::CHOOSE_LANGUAGE)
 			{
 				current_state = GS::MAIN_MENU;
+				language = "US";
+				InitLanguageButtons();
 			}
 			break;
 		}
+
+		
 	}
 }
 
@@ -197,15 +249,6 @@ int main(int argc, char** argv)
 
 	fb_title.Init("BgShader.vs", "BgShader.fs", fb_title_verticies, "fb_title.tga");
 
-	Vertex btn_start_verticies[4] = {
-		Vertex(Vector3f(-0.5f, -0.4f, 0.f), Vector2f(0.0f, 0.0f)),
-		Vertex(Vector3f(-0.5f, 0.0f, 0.f),      Vector2f(0.f, 1.0f)),
-		Vertex(Vector3f(0.5f, 0.0f, 0.f), Vector2f(1.f, 1.0f)),
-		Vertex(Vector3f(0.5f, -0.4f, 0.f), Vector2f(1.f, 0.0f))
-	};
-
-	btn_start.Init("BgShader.vs", "BgShader.fs", btn_start_verticies, "btn_start.tga");
-
 	Vertex US_verticies[4] = {
 		Vertex(Vector3f(-0.4f, -0.7f, 0.f), Vector2f(0.0f, 0.0f)),
 		Vertex(Vector3f(-0.4f, -0.2f, 0.f),      Vector2f(0.f, 1.0f)),
@@ -226,7 +269,8 @@ int main(int argc, char** argv)
 
 	for (int i = 0; i < 5; i++)
 	{
-		pm.AddPipe();
+		pm.AddPipe(true);
+		pm.AddPipe(false);
 	}
 
 	so.Init("", "", nullptr, "");
